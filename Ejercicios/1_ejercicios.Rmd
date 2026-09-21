@@ -1,0 +1,252 @@
+---
+title: "Ejercicios Básicos"
+author: "Pon tu nombre aquí"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+Introducción
+
+El lenguaje R es una herramienta poderosa para el análisis de datos y la estadística. Este documento de trabajo está diseñado para principantes para que aprendan a trabajar con vectores, funciones básicas y análisis de datos básico en R.
+
+------------------------------------------------------------------------
+
+# Ejercicios 1-5: Trabajando con Vectores
+
+## Ejercicio 1: Crear un vector con los años de lanzamiento de 5 películas mexicanas famosas
+
+Cree un vector llamado `estrenos_películas` que contenga los años de estreno de cinco películas mexicanas conocidas. Por ejemplo:
+
+-   *Roma* (2018)
+-   *Y tu mamá también* (2001) - Drama
+-   *El crimen del padre Amaro* (2002) - Drama
+-   *Nosotros los Nobles* (2013) - Comedia
+-   *La ley de Herodes* (1999) - Comedia negra
+
+Recuerda que para consultar los documentos de ayuda de una función, puedes escribir en la consola: `> ?nombre_de_la_función`.
+
+```{r ejercicio-1}
+
+
+
+```
+
+## Ejercicio 2: Calcular el promedio de esos años
+
+Utilice la función mean() para calcular el año promedio de lanzamiento de las películas.
+
+```{r ejercicio-2}
+
+
+```
+
+## Ejercicio 3: Crear un vector con los nombres de las películas
+
+Cree un vector llamado `nombres_peliculas` que contenga los nombres de las cinco películas mexicanas mencionadas anteriormente.
+
+```{r ejercicio-3}
+
+
+```
+
+## Ejercicio 4: Crear un vector con los géneros de esas películas
+
+Cree un vector de tipo carácter llamado  `generos` que contenga el género de cada película, en el mismo orden que el vector de años.
+
+```{r ejercicio-4}
+
+
+```
+
+## Ejercicio 5: Combinar tres vectores: Nombre, años y géneros
+
+Combine los vectores: `nombres_peliculas` `estrenos_peliculas` y `generos` en un data frame llamado `peliculas`, para organizar mejor los datos.
+
+```{r ejercicio-5}
+peliculas <- data.frame(
+  Nombre = nombres_peliculas,
+  Año = estrenos_peliculas,
+  Género = generos
+)
+
+peliculas
+```
+
+```{r ayuda}
+?data.frame()
+```
+
+
+# Ejercicios 6-10: Funciones y Transformaciones
+
+## Ejercicio 6: Usar sort() para ordenar los años de lanzamiento
+
+Ordene los años de menor a mayor utilizando la función sort().
+
+```{r ejercicio-6}
+estrenos_ordenados
+
+
+```
+
+## Ejercicio 7: Usar length() para contar el número de películas
+
+```{r ejercicio-7}
+numero_peliculas <- length(nombres_peliculas)
+numero_peliculas
+```
+
+## Ejercicio 8: Convertir un vector de caracteres a factores
+
+Convierta el vector generos en un factor usando la función `factor()`. Esto es útil para análisis categóricos.
+
+```{r ejercicio-8}
+generos_factor 
+generos_factor
+```
+
+## Ejercicio 9: Usar `table()` para contar géneros cinematográficos
+
+Cree una tabla de frecuencias que muestre cuántas películas hay por género.
+
+```{r ejercicio-9}
+
+
+```
+
+## Ejercicio 10: Calcular la desviación estándar de una lista de ratings
+
+Dado un vector de calificaciones (por ejemplo, de una plataforma de cine), calcule la desviación estándar con `sd()`.
+
+```{r ejercicio-10}
+ratings <- c(7.5, 8.1, 6.9, 8.5, 7.8)
+
+desviacion
+
+desviacion
+
+```
+
+# Ejercicios 11-15: Análisis de Datos Básico
+
+## Ejercicio 11: Crear vectores con museos y su afluencia anual
+
+Cree dos vectores:
+
+-   museos: nombres de cinco museos importantes en la Ciudad de México.
+-   afluencia: número aproximado de visitantes anuales (valores inventados).
+
+```{r ejercicio-11}
+museos <- c("Frida Kahlo", "Tamayo", "Soumaya", "Antropología", "Moderno")
+afluencia <- c(600000, 350000, 1200000, 2500000, 400000)
+
+```
+
+## Ejercicio 12: Sumar la afluencia total
+
+Calcule el total de visitantes anuales entre todos los museos usando la función `sum()`.
+
+```{r ejercicio-12}
+
+total_visitantes
+total_visitantes
+```
+
+## Ejercicio 13: Encontrar el museo con mayor afluencia
+
+Use la función `which.max()` para encontrar la posición del museo más visitado y luego obtenga su nombre.
+
+```{r ejercicio-13}
+
+pos_max <- which.max(afluencia)
+museo_mas_visitado <- museos[pos_max]
+museo_mas_visitado
+```
+
+## Ejercicio 14: Repetir el ejercicio con librerías independientes
+
+Cree vectores librerias y ventas (número de libros vendidos anualmente) y encuentre la librería con mayores ventas.
+
+```{r ejercicio-14}
+
+librerias <- c("Rosario", "El Pendulo", "Lern", "Porrúa", "Larousse")
+ventas <- c(12000, 18000, 9500, 11000, 14000)
+# Coloca aquí tu código para encontrar,la suma de las ventas y la librería con mayores ventas
+
+
+```
+
+## Ejercicio 15: Resumen estadístico de las ventas
+
+Use `summary()` para obtener un resumen descriptivo de las ventas de librerías.
+
+```{r ejercicio-15}
+
+
+```
+
+# Ejercicios 16-20: Desafíos Avanzados
+
+## Ejercicio 16: Simular datos de asistencia a conciertos con `sample()`
+
+Simule la asistencia de 7 conciertos en CDMX, eligiendo al azar entre 2000, 3500 y 5000 personas. Use replace = TRUE para permitir repeticiones.
+
+```{r ejercicio-16}
+
+asistencias <- sample(c(2000, 3500, 5000), size = 7, replace = TRUE)
+asistencias
+
+# ¿Cuál es el promedio de asistencia?
+
+# ¿Cómo se crea un sumario de las asistencias?
+
+
+```
+
+## Ejercicio 17: Ajustar precios de libros con inflación (+10%)
+
+Cree un vector precios con precios de libros y ajústelos con una inflación del 10%.
+
+```{r ejercicio-17}
+
+precios <- c(250, 180, 320, 400, 200)
+
+precios_ajustados
+
+precios_ajustados
+
+```
+
+## Ejercicio 18: Generar una secuencia de años desde 1990 hasta 2020 en pasos de 5
+
+Use `seq()` para crear una secuencia cada 5 años.
+
+\* Recuerda que puedes consultar los archivos de ayuda escribiendo en la consola: `> ?seq()`
+
+```{r ejercicio-18}
+
+```
+
+## Ejercicio 19: Combinar `paste()` para unir nombres de artistas y sus países
+
+Cree un vector de artistas y únalo con su país de origen usando paste().
+
+```{r ejercicio-19}
+artistas <- c("Frida Kahlo", "Diego Rivera", "David Alfaro Siqueiros")
+paises <- rep("México", 3)
+nombres_completos <- paste(artistas, "(", paises, ")", sep = "")
+nombres_completos
+
+```
+
+## Ejercicio 20: Crear un data frame de artistas y sus obras
+
+Recuerda emplear la función `data.frame()`.
+
+```{r ejercicio-20}
+
+obras <- c("Las dos Fridas", "El hombre controlador del universo", "Echo de menos mi tierra")
+
+```
+
+Oprime el boton "Knit" para generar el documento final en formato Word. Asegúrate de que todos los ejercicios estén completos y revisados antes de enviar tu trabajo a Canvas.
