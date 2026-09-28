@@ -1,0 +1,181 @@
+---
+title: "2_intro_tidyverse"
+author: "Your Name"
+date: "`r Sys.Date()`"
+format: pdf
+editor: visual
+---
+
+# Ejercicios de repaso
+
+En este documento vamos a trabajar unos ejercicios que nos permitan afianzar los contenidos de la materia, concretamente trabajaremos con: **`select()`, `arrange()`, y pipes (`|>`).**
+
+Lo primero que necesitamos hacer es, cargar nuestras librerías:
+
+```{r}
+#| label: libreria
+#| message: false
+#| warning: false
+
+library(tidyverse)
+```
+
+Lo segundo que se necesita hacer, es cargar nuestro dataframe `starwars` de la librería `dplyr`:
+
+```{r}
+#| label: dataframe
+starwars <- starwars
+
+```
+
+Al momento de cargar un dataframe, una buena práctica es observar la estructura de nuestro dataframe con la función `glimpse()`:
+
+```{r}
+#| label: glimpse
+
+glimpse(starwars)
+
+```
+
+Podemos observar que el dataframe `starwars` tiene `r nrow(starwars)` y `r ncol(starwars)` observaciones.
+
+1.  Selecciona solo las columnas `name`, `species`, y `homeworld` del dataset starwars.
+
+```{r}
+#| label: ejercicio1
+# Tu código aquí
+
+```
+
+Objetivo: Practicar select() con nombres de columnas.
+
+2.  Usa un pipe (\|\>) para mostrar solo los nombres de los personajes ordenados alfabéticamente.
+
+```{r}
+#| label: ejercicio2
+# Tu código aquí
+
+```
+
+Objetivo: Introducir el uso del pipe con `select()` y `arrange()`.
+
+3.  Ordena todo el dataset starwars por altura (`height`) de mayor a menor.
+
+```{r}
+#| label: ejercicio3
+
+# Tu código aquí
+
+```
+
+Objetivo: Practicar `arrange()` con orden descendente usando `desc()`.
+
+4.  Selecciona las columnas `name`, `gender`, `mass` y ordena los resultados por `mass` (de menor a mayor), excluyendo valores faltantes.
+
+```{r}
+#| label: ejercicio4
+
+# Tu código aquí
+
+```
+
+Objetivo: Combinar `select()` y `arrange()`, y entender cómo R maneja `NA`.
+
+5.  Usa un pipe para mostrar solo el nombre y el planeta de origen de los personajes, ordenados primero por `homeworld `y luego por `name`.
+
+```{r}
+#| label: ejercicio5
+
+# Tu código aquí
+
+```
+
+Objetivo: Practicar múltiples criterios en `arrange()`.
+
+6.  Selecciona todas las columnas excepto `skin_color`, `eye_color`, y `hair_color`. Luego, ordena por `birth_year` de forma ascendente.
+
+
+Objetivo: Usar - en select() para excluir columnas.
+
+7.  Muestra solo los nombres de los personajes cuya especie es `"Human"`, ordenados alfabéticamente.
+
+💡 Pista: Usa `filter()`
+
+```{r}
+#| label: ejercicio7
+
+# Tu código aquí
+
+```
+
+
+8. Selecciona `name`, `species`, `height` y ordena por especie y luego por altura.
+
+```{r}
+#| label: ejercicio8
+
+# Tu código aquí
+
+```
+
+
+Objetivo: Reforzar el encadenamiento con `pipes` y ordenamiento múltiple.
+
+9.  Usa `select()` con ayuda de `starts_with()` para elegir solo las columnas que comienzan con `"hom"`. Luego, ordena por `homeworld` alfabéticamente.
+
+```{r}
+#| label: ejercicio9
+
+# Tu código aquí
+
+```
+
+
+Objetivo: Introducir selectores avanzados como `starts_with()`.
+
+10.  Selecciona `name`, `mass`, `height` y crea una nueva columna temporal (solo para visualización) llamada `BMI` `(mass / (height/100)\^2)`, pero solo muestra las 5 personas con menor `BMI`.
+
+💡 Pista: usa `mutate()`
+
+```{r}
+#| label: ejercicio10
+
+# Tu código aquí
+```
+
+Objetivo: Practicar creación de nuevas columnas con `mutate()` y ordenamiento.
+
+11. Selecciona `name`, `height`, `mass` y ordena por `height` descendente, luego por `mass` ascendente.
+
+```{r}
+#| label: ejercicio11
+
+# Tu código aquí
+```
+
+
+Objetivo: Practicar ordenamiento jerárquico.
+
+12. Usa un pipe para:
+
+Seleccionar `name`, `birth_year`, `species`. Excluir filas con `birth_year` desconocido (`NA`) Ordenar por `birth_year` de mayor a menor (los más antiguos primero) Mostrar solo los primeros 6 resultados\*\* 
+💡 Tip: puedes usar `filter()` o `slice()`
+
+```{r}
+#| label: ejercicio12
+
+# Tu código aquí
+
+```
+
+
+13. Selecciona `name`, `birth_year`, `species`, y ordena por `birth_year` de forma descendente.
+
+```{r}
+#| label: ejercicio13
+
+# Tu código aquí
+
+```
+
+Objetivo: Integrar múltiples pasos con pipes (aunque simplificado).
