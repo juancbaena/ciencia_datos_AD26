@@ -1,0 +1,230 @@
+---
+title: "Ejercicios de limpieza de datos"
+author: "Coloca tu nombre aquí"
+date: "`r Sys.Date()`"
+format: pdf
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+```
+
+# 🧹 Ejercicios de limpieza de datos en R
+
+
+## ✅ **Ejercicio 1: Renombrar columnas y estandarizar nombres**
+
+### 📌 Contexto
+Tienes un dataset de ventas de una tienda de libros con columnas en español y con espacios. Necesitas prepararlo para análisis.
+
+---
+
+### 📂 Datos iniciales (crea este dataframe en R)
+
+```{r df1}
+ventas_libros <- data.frame(
+  Nombre_Libro = c("Cien años de soledad", "El principito", "Harry Potter"),
+  Precio_en_dlls = c(25000, 12000, 35000),
+  Cantidad_vendida = c(150, 300, 200),
+  Fecha_de_venta = c("2023-05-10", "2023-06-15", "2023-07-20"),
+  Categoria_del_libro = c("Ficción", "Infantil", "Fantasía")
+)
+```
+
+
+---
+
+### 🎯 **Objetivo**
+Renombra las columnas a formato estándar en inglés: minúsculas, sin espacios, sin símbolos especiales.  
+**Ejemplo**: `Precio_en_dlls` → `precio_usd`
+
+---
+
+### 💡 Solución
+
+```{r sol1}
+# Coloca tu solución aquí
+
+
+# Ver resultados
+colnames(ventas_libros)
+
+```
+
+> ✅ Resultado esperado:  
+> `nombre_libro`, `precio_usd`, `cantidad_vendida`, `fecha_de_venta`, `categoria_del_libro`
+
+---
+
+## ✅ **Ejercicio 2: Convertir texto a número (moneda y porcentaje)**
+
+### 📌 Contexto
+Un dataset de calificaciones de estudiantes tiene la columna `nota` como texto con símbolos: `"85%"`, `"92%"`, `"78%"`.
+
+---
+
+### 📂 Datos iniciales
+
+```{r df2}
+notas_estudiantes <- data.frame(
+  estudiante = c("Ana", "Carlos", "Lucía", "Diego"),
+  nota = c("85%", "92%", "78%", "Na"),
+  asistencia = c("95%", "88%", "Na", "90%")
+)
+```
+
+---
+
+### 🎯 **Objetivo**
+- Elimina el símbolo `%` de las columnas `nota` y `asistencia`.
+- Convierte ambas columnas a numéricas (de 0 a 100).
+- Reemplaza `"Na"` por `NA`.
+
+---
+
+### 💡 Solución 
+
+```{r sol2}
+# Coloca tu solución aquí
+
+
+# Verificar
+str(notas_estudiantes)
+
+```
+
+> ✅ Resultado esperado:  
+> `nota` y `asistencia` como numéricas, con `NA` en lugar de `"Na"`.  
+
+---
+
+## ✅ **Ejercicio 3: Limpiar y estandarizar categorías (géneros)**
+
+### 📌 Contexto
+En un dataset de películas, los géneros están escritos de forma inconsistente:
+
+```{r df3}
+peliculas <- data.frame(
+  titulo = c("Titanic", "Frozen", "The Dark Knight", "Moana"),
+  genero = c("Drama", "ANIMADA", "Acción", "Musical")
+)
+```
+
+---
+
+### 🎯 **Objetivo**
+- Convierte todos los géneros a minúsculas.
+- Estandariza:
+  - `"animada"` → `"animation"`
+  - `"acción"` → `"action"`
+- Elimina espacios extra.
+
+---
+
+### 💡 Solución
+
+```{r sol3}
+# Coloca tu solución aquí
+
+
+# Ver resultados
+peliculas$genero
+
+```
+
+> ✅ Resultado esperado:  
+> `"drama"`, `"animation"`, `"action"`, `"musical"`
+
+---
+
+## ✅ **Ejercicio 4: Normalizar una escala de calificación**
+
+### 📌 Contexto
+Tienes una columna `calificacion` que va de 0 a 5 (como en Netflix o Google Play), pero necesitas que esté en escala de 0 a 100 para compararla con otras fuentes.
+
+---
+
+### 📂 Datos iniciales
+
+```{r df4}
+recomendaciones <- data.frame(
+  app = c("Spotify", "TikTok", "Instagram", "WhatsApp"),
+  calificacion = c(4.5, 4.2, 4.8, 4.0)
+)
+```
+
+---
+
+### 🎯 **Objetivo**
+Convierte la calificación de escala 0–5 a escala 0–100.
+
+---
+
+### 💡 Solución
+
+```{r sol4}
+# Coloca tu solución aquí
+
+
+# Ver resultados
+recomendaciones
+
+```
+
+> ✅ Resultado esperado:  
+> `Spotify`: 90, `TikTok`: 84, `Instagram`: 96, `WhatsApp`: 80
+
+---
+
+## ✅ **Ejercicio 5: Eliminar duplicados y limpiar fechas**
+
+### 📌 Contexto
+Tienes un dataset de visitas a una biblioteca con duplicados y fechas en formato inconsistente.
+
+---
+
+```{r df5}
+visitas_biblioteca <- data.frame(
+  nombre = c("María", "Juan", "María", "Ana", "Juan"),
+  fecha_visita = c("2023-03-15", "2023-04-10", "2023-03-15", "2023-05-15", "2023-04-10"),
+  libro_prestado = c("Cien años", "El principito", "Pedro Paramo", "Harry Potter", "El laberinto de la soledad")
+)
+```
+
+---
+
+### 🎯 **Objetivo**
+
+1. Convierte `fecha_visita` a formato `Date` (R).
+2. Elimina la columna `libro_prestado` (no es relevante para el análisis).
+
+---
+
+### 💡 Solución 
+
+```{r sol5}
+# Coloca tu solución aquí
+
+
+# Ver resultados
+str(visitas_biblioteca)
+```
+
+> ✅ Resultado esperado:  
+> 3 filas únicas, con `fecha_visita` como clase `Date`.
+
+---
+
+## 📚 **Conclusión: ¿Qué habilidades practicaste?**
+
+| Ejercicio | Habilidad clave |
+|----------|-----------------|
+| 1 | Renombrar columnas con `rename_with()` y `stringr` |
+| 2 | Limpiar texto (eliminar símbolos) y convertir a numérico |
+| 3 | Estandarizar categorías categóricas con `replace()` |
+| 4 | Normalizar escalas (multiplicar por factor) |
+| 5 | convertir fechas (`ymd()`) |
+

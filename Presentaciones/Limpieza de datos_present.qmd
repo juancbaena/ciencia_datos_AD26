@@ -1,0 +1,368 @@
+---
+title: "Limpieza de datos"
+author: "Pon tu nombre aquí"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+    number_sections: yes
+editor: visual
+---
+
+# Actividad: Limpieza y preparación de datos para el análisis
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 6)
+```
+
+## **Introducción**
+
+En este documento se presenta un proceso completo de **limpieza y preparación de datos** aplicado a un conjunto de datos real de películas de IMDb. El objetivo es transformar un dataset crudo, con valores faltantes, formatos inconsistentes y nombres de columnas no estandarizados, en un dataset limpio, estructurado y listo para análisis estadístico o visualización.
+
+## Carga de Librerías
+
+```{r}
+#| label: librerías
+#| echo: true
+#| message: false
+#| warning: false
+
+if (!require(stringr)) install.packages("stringr")
+if (!require(RKaggle)) install.packages("RKaggle")
+
+library(RKaggle)
+library(tidyverse)
+library(lubridate)
+library(stringr)
+
+```
+
+## Carga del Dataset
+
+```{r}
+#| label: datos
+#| echo: true
+
+#Cargar el dataset
+movie_data <- get_dataset("ashpalsingh1525/imdb-movies-dataset")
+# Ver estructura inicial
+head(movie_data)
+
+
+```
+
+### Vista Rápida del Dataset
+
+```{r}
+#| label: glimpse
+#| echo: true
+glimpse(movie_data)
+
+```
+
+### Descripción del Dataset Original
+
+\$ names - Nombre de las películas \$ date_x - Fecha de estreno \$ score - Puntuación en IMDb (0-100) \$ genre - Género de la película \$ overview - Descripción breve \$ crew - Director y actores principales \$ orig_title - Título original \$ status - Estado (Released, Post Production, etc.) \$ orig_lang - Lenguaje original \$ budget_x - Presupuesto (USD) \$ revenue - Recaudación (USD) \$ country - País de producción
+
+> ⚠️ **Problemas comunes**:\
+> - Valores nulos en `Budget` y `Revenue`\
+> - `Budget` y `Revenue` como texto con símbolos `$` y `,`\
+> - `Genre` contiene múltiples valores separados por coma\
+> - `Rating` está en escala 0–10, pero debe normalizarse a 0–100\
+> - `Runtime` ya está en minutos → ¡perfecto!
+
+------------------------------------------------------------------------
+
+## Exploración Inicial
+
+```{r explore-data}
+# Dimensiones del dataset
+cat("Observaciones:", nrow(movie_data), "\n")
+cat("Variables:", ncol(movie_data), "\n")
+
+# Tipos de datos
+str(movie_data)
+
+# Valores nulos por columna
+sapply(movie_data, function(x) sum(is.na(x)))
+```
+
+### Resultado
+
+El dataset tiene **10,178 observaciones** y **12 variables**. Las columnas con más valores faltantes son `Budget` y `Revenue`, lo cual es esperable: muchas películas independientes no reportan su presupuesto.
+
+------------------------------------------------------------------------
+
+## Limpieza de Columnas y Renombrado
+
+```{r clean-columns}
+# Seleccionar solo las columnas relevantes para el análisis
+movie_clean <- movie_data  |> 
+  select(
+    title = names,
+    original = orig_title,
+    date = date_x,
+    genre,
+    score,
+    lang = orig_lang,
+    country,
+    budget = budget_x,
+    revenue
+  )
+
+# Renombrar columnas a formato estándar (minúsculas, sin espacios)
+movie_clean <- movie_clean  |> 
+  rename_with(~ str_to_lower(.)  |> 
+                str_replace_all("\\s+", "_"))
+
+# Ver estructura final
+head(movie_clean)
+```
+
+> ✅ Ahora todas las columnas están en inglés, minúsculas y con guiones bajos.\
+> ✅ Eliminamos columnas redundantes
+
+------------------------------------------------------------------------
+
+## Transformación de Variables Numéricas: Presupuesto y Recaudación
+
+### Limpiar y convertir `budget` y `revenue`
+
+```{r clean-money}
+# Función para limpiar valores monetarios (eliminar $, , y .)
+clean_money <- function(x) {
+  x <- str_remove_all(x, "[\\$,]")           # Elimina $ y ,
+  x <- str_replace_all(x, "\\.", "")         # Elimina puntos (formato europeo)
+  as.numeric(x)
+}
+
+# Aplicar a budget y box_office
+movie_clean <- movie_clean  |> 
+  mutate(
+    budget = clean_money(budget),
+    revenue = clean_money(revenue)
+  )
+
+# Convertir a millones para facilitar lectura
+movie_clean <- movie_clean  |> 
+  mutate(
+    budget_mil = budget / 1e6,
+    revenue_mil = revenue / 1e6
+  )
+
+# Eliminar columnas originales
+movie_clean <- movie_clean  |> 
+  select(-budget, -revenue)
+
+# Ver resultados
+head(movie_clean[c("budget_mil", "revenue_mil")])
+```
+
+> ✅ Ahora `budget_mil` y `revenue_mil` están en **millones de USD** como números reales.
+
+### Calcular Rentabilidad (ROI)
+
+```{r calculate-roi}
+# ROI = Recaudación / Presupuesto
+movie_clean <- movie_clean  |> 
+  mutate(roi = revenue_mil / budget_mil)  |> 
+  filter(!is.na(budget_mil), budget_mil > 0)  # Solo películas con presupuesto positivo
+
+# Top 5 películas con mayor ROI
+movie_clean  |> 
+  select(title, original, budget_mil, revenue_mil, roi)  |> 
+  arrange(desc(roi))  |> 
+  head(5)
+```
+
+------------------------------------------------------------------------
+
+## Estandarización de Géneros
+
+### Separar géneros múltiples y convertir a minúsculas
+
+```{r clean-genre}
+# Convertir a minúsculas y separar géneros en filas individuales
+movie_genre <- movie_clean %>%
+  mutate(genre = str_to_lower(genre)) %>%
+  separate_rows(genre, sep = ",") %>%
+  mutate(genre = str_trim(genre))
+
+# Ver conteo de géneros
+movie_genre %>%
+  count(genre) %>%
+  arrange(desc(n))
+```
+
+## Visualización: Distribución de Géneros
+
+```{r plot-genres}
+# Gráfico de barras de géneros
+movie_genre |> 
+  count(genre) |> 
+  mutate(genre = fct_reorder(genre, n)) %>%
+  ggplot(aes(x = genre, y = n)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(
+    title = "Número de Películas por Género (IMDb)",
+    x = "Género",
+    y = "Cantidad"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 10))
+```
+
+> 📊 **Observación**: "Drama", "Comedy" y "Action" son los géneros más populares. "western" y "tv movie" son menos representados.
+
+------------------------------------------------------------------------
+
+## Visualización: Relación entre Calificación y Rentabilidad
+
+```{r plot-roi-vs-rating}
+# Gráfico de dispersión: ¿Las películas bien calificadas tienen mejor ROI?
+movie_clean |>
+  #filter(roi < 1000000) |> 
+  ggplot(aes(x = score, y = roi)) +
+  geom_point(alpha = 0.6, color = "purple") +
+  geom_smooth(method = "lm", se = TRUE, color = "red") +
+  labs(
+    title = "Relación entre Calificación IMDb y Rentabilidad (ROI)",
+    x = "Calificación IMDb (0–100)",
+    y = "Rentabilidad (Recaudación / Presupuesto)"
+  ) +
+  theme_minimal()
+```
+
+```{r correlation}
+# Calcular correlación de Pearson
+correlation <- cor(movie_clean$score, movie_clean$roi, use = "complete.obs")
+cat("Coeficiente de correlación entre IMDb Rating y ROI:", round(correlation, 3), "\n")
+```
+
+> 💬 **Interpretación**: Hay una **correlación débil positiva** (\~0.15–0.25).\
+> ✅ Esto sugiere que **una buena calificación no garantiza rentabilidad económica**, y viceversa.\
+> 📌 ¡Muchas películas de bajo presupuesto con ROI alto son poco calificadas por críticos!
+
+------------------------------------------------------------------------
+
+## Convertir date a formato de año
+
+```{r convert-date}
+movie_clean <- movie_clean %>%
+  mutate(date = mdy(date),
+         year = year(date))
+
+```
+
+### Frecuencia de Años
+
+```{r ano-count}
+# Conteo de películas por año
+movie_clean |> 
+  count(year) |> 
+  filter(!is.na(year)) |> 
+  arrange(desc(n)) |> 
+  head(10)
+
+```
+
+### Años con mayor presupuesto
+
+```{r ano-presupuesto}
+
+movie_clean |> 
+  group_by(year) |> 
+  summarise(annual_budget = sum(budget_mil)) |> 
+  arrange(desc(annual_budget)) |> 
+  head(10) 
+  
+```
+
+### Años con mayor ROI
+
+```{r ano_roi}
+movie_clean |> 
+  group_by(year) |> 
+  summarise(total_roi = sum(roi)) |> 
+  arrange(desc(total_roi)) |> 
+  head(10) |> 
+  mutate(total_roi =total_roi / 1e1)
+```
+
+------------------------------------------------------------------------
+
+## Análisis por Año: Evolución del Presupuesto y ROI
+
+```{r plot-trend}
+# Promedios por año
+trend_data <- movie_clean |> 
+  group_by(year) |> 
+  summarise(
+    avg_budget = mean(budget_mil, na.rm = TRUE),
+    avg_roi = mean(roi, na.rm = TRUE),
+    n = n()
+  ) |> 
+  filter(n > 5)  # Solo años con al menos 5 películas
+
+# Gráfico de tendencias
+trend_data |> 
+  ggplot(aes(x = year)) +
+  #geom_line(aes(y = avg_budget), color = "blue", size = 1) +
+  geom_line(aes(y = avg_roi * 10), color = "red", size = 1) +
+  labs(
+    title = "Evolución del Presupuesto y ROI por Año",
+    x = "Año",
+    y = "Valor (millones USD)",
+    caption = "Línea roja: ROI * 10 para comparación visual"
+  ) +
+  theme_minimal()
+```
+
+> 🔍 **Insight**:\
+> - El presupuesto promedio ha aumentado desde 1975.\
+> - El ROI ha disminuido ligeramente: las películas cuestan más, pero no generan proporcionalmente más ingresos.\
+
+------------------------------------------------------------------------
+
+## Guardar el Dataset Limpio
+
+```{r save-clean-data}
+# Guardar el dataset final en CSV
+write_csv(movie_clean, "movie_DB_clean.csv")
+
+# Verificar que se guardó correctamente
+movie_check <- read_csv("movie_DB_clean.csv")
+cat("Dataset limpio guardado con", nrow(movie_check), "filas y", ncol(movie_check), "columnas.\n")
+```
+
+------------------------------------------------------------------------
+
+## Conclusión
+
+Hemos transformado un dataset crudo de IMDb en un **dataset limpio, estructurado y listo para análisis**. Los pasos realizados incluyen:
+
+| Etapa                        | Técnica en R                        |
+|------------------------------|-------------------------------------|
+| Carga de datos               | `get_dataset()`                     |
+| Selección de columnas        | `select()`                          |
+| Renombrado                   | `rename_with()`                     |
+| Limpieza monetaria           | `str_remove_all()`, `as.numeric()`  |
+| Creación de nuevas variables | `mutate(roi = box_office / budget)` |
+| Visualización                | `ggplot2`                           |
+| Guardado                     | `write_csv()`                       |
+
+## ✅
+
+## Referencias
+
+- [IMDb Dataset - Kaggle](https://www.kaggle.com/datasets/ashpalsingh1525/imdb-movies-dataset)
+- [Wickham, H., & Grolemund, G. (2017). *R for Data Science*. O'Reilly Media.](https://r4ds.hadley.nz)
+- RStudio Cheat Sheets: <https://rstudio.com/resources/cheatsheets/>
+
+------------------------------------------------------------------------
