@@ -1,0 +1,150 @@
+---
+title: "Actividad 17. Comandos básicos de Python y uso de la IA generativa para la manipulación básica de datos"
+author: "Pon tu nombre aquí"
+format: pdf
+editor: visual
+---
+
+## Librerías
+
+```{r}
+#| label: librerias
+if (!require(flextable)) install.packages("flextable")
+
+library(tidyverse)
+library(skimr)
+library(flextable)
+
+```
+
+
+## Cargamos el dataset
+
+```{r}
+#| label: dataset
+
+mcu <- read_csv("https://raw.githubusercontent.com/juancbaena/ciencia_datos_AD26/master/data/mcu.csv")
+```
+### Observamos el dataset (glimpse())
+
+```{r}
+#| label: glimpse
+# Coloca aquí tu código con la función glimpse()
+
+
+```
+
+¿Cuántas variables tiene el dataset?
+
+¿Cuántas observaciones tiene el dataset?
+
+
+### Convierte a formato fecha la observación "release_date"
+
+```{r}
+#| label: fecha
+
+# Cuando empieces a modificar tu dataset, recuerda que debes crear un nuevo dataset para no perder el original. (mcu_clean)
+
+
+```
+
+
+
+### Observamos nuestro dataset con la función skim()
+
+```{r}
+#| label: mcu-skim
+
+skim(mcu_clean)
+  
+
+```
+
+### Observamos nuestro dataset con la función summary()
+
+```{r}
+#| label: mcu-summary
+
+mcu_clean |> 
+  summary()
+```
+¿Qué te dicen sobre el dataset las funciones skim y summary?
+
+
+¿Qué características tiene el datset de acuerdo a las funciones antes mencionadas?
+
+
+### Unificación de la duración de las películas
+
+Convierte las dos columnas de duración a un solo formato (minutos) y crea una nueva columna llamada "duration_min".
+
+```{r}
+#| label: duracion
+# Coloca tu código aquí, recuerda que para crear una nueva columna se utiliza la función mutate()
+
+```
+
+
+## Exploración del dataset
+
+Vamos a explorar el dataset tratando de responder a las siguientes preguntas:
+
+1. ¿Cuál es la película más larga del MCU?
+2. ¿Cuál es la película más corta del MCU?
+3. ¿Cuál es la película con mayor recaudación del MCU, en la semana de su estreno, en USA y en el mundo?
+4. ¿Cuál es la película con menor recaudación del MCU, en la semana de su estreno, en USA y en el mundo?
+5. ¿Qué franquicia tuvo la mayor recaudación, por semana de estreno, en USA y en el mundo?
+
+
+```{r}
+#| label: pelicula-mas-larga
+mcu_clean |> 
+  # función para organizar los datos de manera descendente según la duración
+  ___________________________ |> 
+  select(movie, duration_min) |>
+  head(1) |> 
+  flextable() |> 
+  autofit() |> 
+  theme_vanilla()
+
+```
+
+Recuerda colocar tu respuesta en las preguntas más arriba
+
+```{r}
+#| label: pelicula-mas-corta
+mcu_clean |> 
+  # función para organizar los datos de manera descendente según la duración
+  ___________________________ |> 
+  select(movie, duration_min) |>
+  head(1) |> 
+  flextable() |> 
+  autofit() |> 
+  theme_vanilla()
+```
+
+
+
+```{r}
+#| label: peliculas-mayor-recaudacion
+
+
+```
+
+
+```{r}
+#| label: peliculas_menor_recaudación
+
+
+```
+
+
+```{r}
+#| label: franquicia-mayor-recaudacion
+# Para observar por franquicia puedes emplear group_by() y summarise() para obtener la suma de la recaudación por franquicia, y luego organizar los datos de manera descendente según la recaudación total.
+
+
+
+```
+
