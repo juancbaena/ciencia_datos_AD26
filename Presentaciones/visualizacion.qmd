@@ -1,0 +1,381 @@
+---
+title: "Visualización de datos"
+author: "Coloca tu nombre aqui"
+date: "`r Sys.Date()`"
+format: pdf
+editor: visual
+---
+
+## 📦 Cargar paquetes y datos
+
+### Librerías necesarias
+
+```{r}
+#| label: setup
+#| echo: true
+#| message: false
+#| warning: false
+
+if (!require(ggthemes)) install.packages("ggthemes")
+
+library(tidyverse)
+library(palmerpenguins)
+library(ggthemes)
+
+```
+
+## 🐧 Conocer el dataset `penguins`
+
+### `glimpse` del dataset
+
+```{r}
+#| echo: true
+glimpse(penguins)
+```
+
+## 🎯 Parte 1: Primer gráfico con `ggplot2`
+
+### ¿Qué es `ggplot2`?
+
+-   Implementa la **Gramática de Gráficos** (Grammar of Graphics).
+-   Construimos gráficos por **capas**: datos → estética → geometría → ajustes.
+-   Muy flexible y poderoso.
+
+### Paso 1: Gráfico vacío
+
+```{r}
+#| label: vacio
+#| echo: true
+
+ggplot(data = penguins)
+
+```
+
+### **¿Qué pasó?**
+
+> Esto no muestra nada… ¡pero ya “conoce” los datos!
+
+### Paso 2: Añadir estética (`aes`)
+
+```{r}
+#| label: aes1
+#| echo: true
+
+
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, y = body_mass_g))
+
+```
+
+### **Aún no hay gráfico**:
+
+Solo definimos **qué variables van en qué ejes**.
+
+### Paso 3: Añadir geometría (`geom_point`)
+
+```{r}
+#| label: point1
+#| echo: true
+
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point()
+
+```
+
+### ✅ ¡Listo! Un scatterplot.
+
+**ojo** : `ggplot()` + `aes()` + `geom_` son los bloques básicos.
+
+### Paso 4: Añadir más información con `color` o `shape`
+
+```{r}
+#| label: color1
+#| echo: true
+
+ggplot(penguins, 
+       aes(x = flipper_length_mm, 
+           y = body_mass_g, 
+           color = species)) +
+  geom_point()
+
+```
+
+### **Discusión**:
+
+¿Qué aprendemos al colorear por especie?
+
+### Paso 5: Suavizar con `geom_smooth()`
+
+```{r}
+#| label: smooth1
+#| echo: true
+#| message: false
+#| warning: false
+
+
+ggplot(penguins, 
+       aes(x = flipper_length_mm, 
+           y = body_mass_g, 
+           color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+```
+
+> **Nota**: `se = FALSE` quita la banda de confianza para mayor claridad.
+
+### **Discusión**:
+
+¿Qué nos dice la línea de tendencia?
+
+### Paso 6: modificar `mapping =` en los geoms.
+
+```{r}
+#| label: map1
+#| echo: true
+#| message: false
+#| warning: false
+
+ggplot(penguins,
+  aes(x = flipper_length_mm, 
+      y = body_mass_g)) +
+  geom_point(mapping = aes(color = species)) +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+### **Discusión**:
+
+¿Qué cambia al mover `aes(color = species)` a `geom_point()`?
+
+### Paso 7: Añadir más estética en `geom_point()` **shape**
+
+```{r}
+#| label: shape1
+#| echo: true
+#| message: false
+#| warning: false
+
+
+ggplot(penguins,
+  aes(x = flipper_length_mm, 
+      y = body_mass_g)) +
+  geom_point(mapping = aes(color = species, 
+                           shape = species)) +
+  geom_smooth(method = "lm")
+
+```
+
+### Paso 8: Ajustar etiquetas `labs()` y escala de colores `scale_color`
+
+```{r}
+#| label: labs1
+#| echo: true
+#| message: false
+#| warning: false
+
+
+ggplot(
+  data = penguins,
+  mapping = aes(x = flipper_length_mm, y = body_mass_g)
+) +
+  geom_point(aes(color = species, shape = species)) +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Masa corporal y longitud de la aleta",
+    subtitle = "Dimensiones para las especies de pingüinos: Adelie, Chinstrap y Gentoo",
+    x = "Longitud de la aleta (mm)", y = "Masa corporal (g)",
+    color = "Especies", shape = "Especies"
+  ) +
+  scale_color_colorblind()
+  
+```
+
+## ✏️ Ejercicios
+
+### **Instrucciones**:
+
+1.  ¿El siguiente codigo por qué arroja un error? ¿Cómo lo corriges?
+
+```{r}
+#| label: ejercicio 1
+#| echo: true
+
+ggplot(data = penguins) + 
+  geom_point()
+
+```
+
+2.  Crea un scatterplot de `bill_length_mm` vs `bill_depth_mm`, coloreado por `island`. Añade una curva de suavizado.
+
+### Solución sugerida
+
+```{r}
+#| label: ejercicio 2
+#| echo: true
+
+# Coloca aquí tu respuesta
+
+
+  
+```
+
+## 📊 Parte 2: Visualizar distribuciones
+
+### Categóricas → `geom_bar()`
+
+```{r}
+#| label: bar
+#| echo: true
+#| message: false
+#| warning: false
+
+ggplot(penguins, aes(x = species)) +
+  geom_bar()
+
+```
+
+> Nota: `geom_bar()` cuenta automáticamente. No necesitas `count()`.
+
+### Numéricas → `geom_histogram()`
+
+```{r}
+#| label: hist
+#| echo: true
+#| message: false
+#| warning: false
+# Histograma
+ggplot(penguins, aes(x = body_mass_g)) +
+  geom_histogram(bins = 20, fill = "lightblue", color = "black")
+
+```
+
+### Numéricas → `geom_density()`
+
+```{r}
+#| label: dens
+#| echo: true
+#| message: false
+#| warning: false
+
+
+# Densidad
+ggplot(penguins, aes(x = body_mass_g)) +
+  geom_density(fill = "lightgreen", alpha = 0.5)
+
+```
+
+### Comparar distribuciones entre grupos
+
+```{r}
+#| label: dens2
+#| echo: true
+#| message: false
+#| warning: false
+# Densidad por especie
+ggplot(penguins, aes(x = body_mass_g, fill = species)) +
+  geom_density(alpha = 0.6)
+
+```
+
+## 🔗 Parte 3: Relaciones entre variables
+
+### Numérica vs categórica → `geom_boxplot()`
+
+```{r}
+#| label: box
+#| echo: true
+#| message: false
+#| warning: false
+
+ggplot(penguins, aes(x = species, y = body_mass_g, fill = species)) +
+  geom_boxplot() +
+  labs(title = "Masa corporal por especie", x = "Especie", y = "Masa (g)")
+```
+
+### Dos categóricas → barras apiladas
+
+```{r}
+#| label: stack
+#| echo: true
+#| message: false
+#| warning: false
+ggplot(penguins, aes(x = island, fill = species)) +
+  geom_bar(position = "stack")
+```
+
+### **Variante**: `position = "fill"` para proporciones.
+
+```{r}
+#| label: stack2
+#| echo: true
+#| message: false
+#| warning: false
+
+ggplot(penguins, aes(x = island, fill = species)) +
+  geom_bar(position = "fill")
+```
+
+## 📐 Parte 4: Facetas para subgrupos
+
+### Facetas: pequeños múltiplos
+
+```{r}
+#| label: facet
+#| echo: true
+#| message: false
+#| warning: false
+
+ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point() +
+  facet_wrap(~ island)
+```
+
+> **Ventaja**: evita superposición, permite comparar subgrupos.
+
+## 🧩 Ejercicio final
+
+**En parejas**:\
+Usando el dataset `mpg` (incluido en `ggplot2`):
+
+1.  Crea un gráfico que muestre la relación entre `displ` (tamaño del motor) y `hwy` (eficiencia en carretera).
+2.  Colorea los puntos por `class` (tipo de vehículo).
+3.  Añade facetas por `drv` (tracción: delantera, trasera, 4x4).
+4.  Personaliza títulos y colores.
+
+### Solución
+
+```{r}
+#| label: final
+#| echo: true
+#| message: false
+#| warning: false
+
+# Coloca aquí tu respuesta
+
+
+```
+
+### **Discusión final**:
+
+-   ¿Qué patrones observan?
+
+-   ¿Los autos compactos son más eficientes?
+
+-   ¿La tracción afecta la eficiencia?
+
+## 📚 Cierre y recursos
+
+### Principios clave
+
+-   **Datos → estética → geometría**.
+-   Usa `aes()` para mapear variables; usa argumentos fuera de `aes()` para valores fijos.
+-   Prefiere gráficos que permitan comparaciones precisas (barras \> pasteles).
+
+### Recursos
+
+-   📘 *R for Data Science*: [Capítulo 3 – Data Visualization](https://r4ds.hadley.nz/data-visualize.html)
+-   🖼️ [R Graph Gallery – ggplot2](https://r-graph-gallery.com/ggplot2-package.html)
+-   [*Libro de ggplot*](https://ggplot2-book.org)
+-   [Tutorial de ggplot](https://cedricscherer.netlify.app/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/#themes)
+-   🧪 Practica con: `diamonds`, `mpg`, `penguins`
