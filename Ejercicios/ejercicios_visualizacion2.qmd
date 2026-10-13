@@ -1,0 +1,147 @@
+---
+title: "EJercicios visualizaci{on"
+author: "Coloca aqui tu nombre"
+date: "`r Sys.Date()`"
+format: pdf
+editor: visual
+---
+
+## Librerías
+
+Carga las librerías que vamos a usar:
+
+```{r}
+#| label: librerias
+#| echo: true
+#| message: false
+#| warning: false
+library(tidyverse)
+library(ggthemes)
+
+```
+
+## Cargar datos
+
+vamos a usar un dataset sobre las películas de Netflix
+
+```{r}
+data <- read_csv("data/netflix.csv") # recuerda modificar aqui para indicar a r dónde está tu archivo csv
+```
+
+## Glimpse
+
+Observamos nuestro dataset:
+
+```{r}
+#| label: glimpse
+glimpse(data)
+```
+
+¿Cuántas observaciones tiene el dataset: ¿Cuántas variables tiene el dataset:
+
+## Fecha
+
+El primer paso es convertir las variables date_added y release_year a formato fecha.
+
+```{r}
+#| label: 1er_ejercicio
+
+# Coloca aquí tu código
+
+```
+
+## Variables numéricas
+
+El segundo paso es crear una nueva variable que indique el tiempo transcurrido entre la fecha de adición y la fecha de lanzamiento.
+
+```{r}
+#| label: 2o_ejercicio
+# Coloca aquí tu código
+
+
+```
+
+## Visualizaciones
+
+Aquí vamos a crear distintas visualizaciones Recuerda la gramática de ggplot2: data + aes() + geom\_\* + theme\_\* + labs() + opciones
+
+### Scatterplot - geom_point
+
+Escoge dos variables numéricas y crea un scatterplot.
+
+```{r}
+#| label: scatterplot
+# Coloca aquí tu código
+
+
+```
+
+### Graficos de barras - geom_bar
+
+Escoge una variable categórica y crea un gráfico de barras.
+
+```{r}
+#| label: barras
+
+# Coloca aquí tu código
+
+```
+
+### Histograma - geom_histogram
+
+Crea una histograma de una variable numérica.
+
+```{r}
+#| label: histograma
+
+#Colca aquí tu código
+
+```
+
+### Gráfica de densidad - geom_density
+
+Crea una gráfica de densidad de una variable numérica.
+
+```{r}
+#| label: densidad
+
+# Coloca aquí tu código
+
+```
+
+### boxplot - geom_boxplot
+
+Crea un boxplot de una variable numérica y una categórica.
+
+```{r}
+#| label: boxplot
+
+# Coloca aquí tu código
+
+```
+
+### Barras apiladas - geom_bar (opción fill)
+
+Crea un gráfico de barras apiladas con dos variables categóricas.
+
+```{r}
+#| label: barras_apiladas
+
+# Coloca aquí tu código
+
+```
+
+### facetas - facet_wrap
+
+Crea un gráfico con facetas usando facet_wrap().
+
+```{r}
+#| label: facetas
+
+# Coloca aquí tu código
+
+```
+
+## Ejercicio final
+
+Crea una visualización que utilice al menos dos opciones avanzadas como color o fill o shape. También agrega título, subtitulo, nombra los ejes y cambia el tema (puedes ver opciones de temas aquí: (https://ggplot2.tidyverse.org/reference/ggtheme.html)\[https://ggplot2.tidyverse.org/reference/ggtheme.html\] y también aquí: (https://jrnold.github.io/ggthemes/)\[https://jrnold.github.io/ggthemes/\])
